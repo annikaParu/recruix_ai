@@ -1,0 +1,41 @@
+import { NavLink } from "react-router-dom";
+import { Briefcase, Bookmark, CheckCircle2, BarChart3, Settings } from "lucide-react";
+
+const items = [
+  { to: "/dashboard", label: "Jobs", Icon: Briefcase },
+  { to: "/saved", label: "Saved", Icon: Bookmark },
+  { to: "/applied", label: "Applied", Icon: CheckCircle2 },
+  { to: "/insights", label: "Insights", Icon: BarChart3 },
+  { to: "/settings", label: "Settings", Icon: Settings },
+];
+
+export function BottomNav() {
+  return (
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t bg-bg-card px-2 py-2 md:hidden"
+      style={{ borderColor: "var(--border)" }}
+      aria-label="Bottom navigation"
+    >
+      {items.map(({ to, label, Icon }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === "/dashboard"}
+          className={({ isActive }) =>
+            `flex w-full flex-col items-center justify-center gap-1 rounded-button px-2 py-1 text-[10px] font-medium transition ${
+              isActive ? "text-accent" : "text-text-secondary"
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <Icon size={18} className={isActive ? "text-accent" : ""} />
+              <span>{label}</span>
+            </>
+          )}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
+

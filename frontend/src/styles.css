@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --secondary: #8b5cf6;
+  --accent: #14b8a6;
+  --accent-dark: #0f766e;
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-hero: #eef2ff;
+  --bg-badge: #e0e7ff;
+  --bg-purple: #ede9fe;
+  --bg-teal: #ccfbf1;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e0e7ff;
+  --border-light: #f1f5f9;
+}
+
+body {
+  @apply font-body;
+}
+
+/* Landing stats bar: vertical dividers between columns, none after 2nd on mobile */
+.landing-stat-cell {
+  border-right: 1px solid var(--border);
+}
+.landing-stat-cell:nth-child(2) {
+  border-right: none;
+}
+.landing-stat-cell:last-child {
+  border-right: none;
+}
+@media (min-width: 768px) {
+  .landing-stat-cell:nth-child(2) {
+    border-right: 1px solid var(--border);
+  }
+}
+
+/* Design system: buttons 8px radius, cards 12px */
+.rounded-button {
+  border-radius: 8px;
+}
+.rounded-card {
+  border-radius: 12px;
+}
+
+/* Dashboard: offset main content when fixed sidebar (70px) is visible */
+.dashboard-main {
+  margin-left: 0;
+}
+@media (min-width: 768px) {
+  .dashboard-main {
+    margin-left: 70px;
+  }
+}
+
