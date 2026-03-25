@@ -1,16 +1,22 @@
 /**
  * Centralized API client for the Recruix backend.
  * Base URL: VITE_API_URL (defaults to http://localhost:8000)
- * Attaches JWT token automatically; redirects to /login on 401.
+ * Attaches Supabase session JWT (Bearer) on every request via getSession().
  */
+
+import { supabase } from "./supabase";
 
 const BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8000";
 const API_PREFIX = `${BASE_URL}/api`;
 
-function getHeaders(omitContentType = false): HeadersInit {
+/** Authorization + optional Content-Type for JSON requests */
+async function getAuthHeaders(omitContentType = false): Promise<Record<string, string>> {
   const headers: Record<string, string> = {};
-  const token = localStorage.getItem("access_token");
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const token = session?.access_token;
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -22,8 +28,8 @@ function getHeaders(omitContentType = false): HeadersInit {
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 401) {
-    localStorage.removeItem("access_token");
-    window.location.href = "/login";
+    await supabase.auth.signOut();
+    window.location.href = "/signin";
     throw new Error("Unauthorized");
   }
   if (!res.ok) {
@@ -50,7 +56,7 @@ async function request<T>(
 ): Promise<T> {
   const { omitContentType, ...rest } = init;
   const headers = {
-    ...getHeaders(omitContentType ?? false),
+    ...(await getAuthHeaders(omitContentType ?? false)),
     ...(init.headers as Record<string, string>),
   };
   const res = await fetch(`${API_PREFIX}${path}`, {
@@ -79,9 +85,7 @@ export interface ResumeParseOutput {
 export async function parseResume(file: File): Promise<ResumeParseOutput> {
   const form = new FormData();
   form.append("file", file);
-  const headers: Record<string, string> = {};
-  const token = localStorage.getItem("access_token");
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const headers = await getAuthHeaders(true);
   const res = await fetch(`${API_PREFIX}/resume/parse`, {
     method: "POST",
     headers,
@@ -163,14 +167,3 @@ export async function register(data: {
   });
 }
 
-// --- Chat ---
-
-export async function chat(
-  message: string,
-  user_context?: string
-): Promise<{ response: string }> {
-  return request<{ response: string }>("/chat", {
-    method: "POST",
-    body: JSON.stringify({ message, user_context }),
-  });
-}

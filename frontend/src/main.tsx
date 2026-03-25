@@ -2,32 +2,38 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./styles.css";
-import { Layout } from "./ui/Layout";
-import { SavedPage } from "./ui/pages/SavedPage";
-import { AppliedPage } from "./ui/pages/AppliedPage";
-import { InsightsPage } from "./ui/pages/InsightsPage";
-import { SettingsPage } from "./ui/pages/SettingsPage";
-import { SearchJobsPage } from "./ui/pages/SearchJobsPage";
-import { ResumePage } from "./ui/pages/ResumePage";
-import { RecentJobsPage } from "./ui/pages/RecentJobsPage";
-import { AutoApplyPage } from "./ui/pages/AutoApplyPage";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AppShell } from "./components/AppShell";
 import { LandingPage } from "./pages/LandingPage";
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import { AuthCallback } from "./pages/AuthCallback";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Dashboard } from "./pages/Dashboard";
+import { Jobs } from "./pages/Jobs";
+import { ResumeOptimizer } from "./pages/ResumeOptimizer";
+import { Progress } from "./pages/Progress";
+import { SavedJobs } from "./pages/SavedJobs";
+import { AppliedJobs } from "./pages/AppliedJobs";
+import { Settings } from "./pages/Settings";
+import { Roadmap } from "./pages/Roadmap";
 
 function AppRoutes() {
   const { user, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-bg-page text-text-primary">
-        <div
-          className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent"
-        />
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--bg-page)",
+        }}
+      >
+        <div className="recrux-spinner" />
       </div>
     );
   }
@@ -49,41 +55,40 @@ function AppRoutes() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Layout>
-              <SearchJobsPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/dashboard/search" element={<Navigate to="/dashboard" replace />} />
-      <Route
-        path="/dashboard/resume"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <ResumePage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/dashboard/resumematch" element={<Navigate to="/dashboard/resume" replace />} />
-      <Route
-        path="/dashboard/recent"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <RecentJobsPage />
-            </Layout>
+            <AppShell>
+              <Dashboard />
+            </AppShell>
           </ProtectedRoute>
         }
       />
       <Route
-        path="/dashboard/autoapply"
+        path="/jobs"
         element={
           <ProtectedRoute>
-            <Layout>
-              <AutoApplyPage />
-            </Layout>
+            <AppShell>
+              <Jobs />
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/resume-optimizer" element={<Navigate to="/resume" replace />} />
+      <Route
+        path="/resume"
+        element={
+          <ProtectedRoute>
+            <AppShell>
+              <ResumeOptimizer />
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute>
+            <AppShell>
+              <Progress />
+            </AppShell>
           </ProtectedRoute>
         }
       />
@@ -91,9 +96,9 @@ function AppRoutes() {
         path="/saved"
         element={
           <ProtectedRoute>
-            <Layout>
-              <SavedPage />
-            </Layout>
+            <AppShell>
+              <SavedJobs />
+            </AppShell>
           </ProtectedRoute>
         }
       />
@@ -101,19 +106,9 @@ function AppRoutes() {
         path="/applied"
         element={
           <ProtectedRoute>
-            <Layout>
-              <AppliedPage />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/insights"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <InsightsPage />
-            </Layout>
+            <AppShell>
+              <AppliedJobs />
+            </AppShell>
           </ProtectedRoute>
         }
       />
@@ -121,22 +116,23 @@ function AppRoutes() {
         path="/settings"
         element={
           <ProtectedRoute>
-            <Layout>
-              <SettingsPage />
-            </Layout>
+            <AppShell>
+              <Settings />
+            </AppShell>
           </ProtectedRoute>
         }
       />
       <Route
-        path="/dashboard/settings"
+        path="/roadmap"
         element={
           <ProtectedRoute>
-            <Layout>
-              <SettingsPage />
-            </Layout>
+            <AppShell>
+              <Roadmap />
+            </AppShell>
           </ProtectedRoute>
         }
       />
+
       <Route
         path="*"
         element={<Navigate to={authed ? "/dashboard" : "/"} replace />}
@@ -160,4 +156,3 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <Root />
   </React.StrictMode>
 );
-
