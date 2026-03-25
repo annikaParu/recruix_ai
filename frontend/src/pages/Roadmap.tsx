@@ -816,8 +816,25 @@ export function Roadmap() {
   const phases = useMemo(() => buildPhasePlan(role, timeframe), [role, timeframe]);
 
   return (
-    <div style={{ width: "100%", maxWidth: 1100, margin: "0 auto", padding: "40px 22px 48px", boxSizing: "border-box" }}>
-      <header style={{ marginBottom: 28, textAlign: "center", maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "none",
+        margin: 0,
+        minHeight: "calc(100vh - 56px)",
+        boxSizing: "border-box",
+        background: R.card,
+        border: hairline,
+        borderRadius: 16,
+        boxShadow: "0 4px 28px rgba(4, 44, 83, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ height: 4, background: `linear-gradient(90deg, ${R.primary}, ${R.mid})` }} />
+      <div style={{ padding: "40px 22px 48px", flex: 1, minHeight: 0, overflowY: "auto" }}>
+        <header style={{ marginBottom: 28, textAlign: "center" }}>
         <p
           style={{
             display: "inline-flex",
@@ -903,6 +920,7 @@ export function Roadmap() {
         <p style={{ fontSize: 12, color: R.body, marginTop: 10, lineHeight: 1.5, textAlign: "center" }}>
           Pro tip: use <strong style={{ color: R.darkest, fontWeight: 700 }}>Settings</strong> to keep your profile up to date — better signals lead to better recommendations.
         </p>
+      </div>
       </div>
     </div>
   );

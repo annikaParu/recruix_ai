@@ -39,27 +39,41 @@ export function RecruxListPageShell({
     <div
       style={{
         width: "100%",
-        maxWidth: 980,
-        margin: "0 auto",
+        maxWidth: "none",
+        margin: 0,
         padding: "28px 22px 52px",
         boxSizing: "border-box",
+        minHeight: "calc(100vh - 56px)",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <header style={{ marginBottom: 22 }}>
         <h1 className="recrux-heading" style={{ fontSize: 28, fontWeight: 700, color: R.darkest, margin: 0, letterSpacing: "-0.02em" }}>
           {title}
         </h1>
-        <p style={{ fontSize: 15, color: R.body, margin: "10px 0 0", lineHeight: 1.55, maxWidth: 560 }}>
+        <p style={{ fontSize: 15, color: R.body, margin: "10px 0 0", lineHeight: 1.55 }}>
           {subtitle}
         </p>
       </header>
 
-      <div style={panelBase}>
+      <div
+        style={{
+          ...panelBase,
+          flex: 1,
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <div aria-hidden style={{ height: 4, background: barGradient }} />
         <div
           style={{
             padding: "28px 26px 32px",
             background: `linear-gradient(165deg, ${R.light} 0%, rgba(255,255,255,0.97) 22%, ${R.card} 55%)`,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <div
@@ -134,7 +148,7 @@ export function RecruxListPageShell({
             </div>
           </div>
 
-          <div style={{ minHeight: 200 }}>{children}</div>
+          <div style={{ flex: 1, minHeight: 0 }}>{children}</div>
         </div>
       </div>
     </div>

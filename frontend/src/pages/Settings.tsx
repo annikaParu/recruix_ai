@@ -239,10 +239,13 @@ export function Settings() {
 
   const pageWrap = {
     width: "100%",
-    maxWidth: 760,
-    margin: "0 auto",
+    maxWidth: "none",
+    margin: 0,
     padding: "24px 20px 48px",
     boxSizing: "border-box" as const,
+    minHeight: "calc(100vh - 56px)",
+    display: "flex",
+    flexDirection: "column",
   };
 
   const settingsPanel = {
@@ -251,6 +254,10 @@ export function Settings() {
     borderRadius: 16,
     boxShadow: "0 4px 28px rgba(4, 44, 83, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06)",
     overflow: "hidden" as const,
+    flex: 1,
+    minHeight: 0,
+    display: "flex",
+    flexDirection: "column",
   };
 
   if (loading) {
@@ -263,7 +270,7 @@ export function Settings() {
               background: `linear-gradient(90deg, ${R.primary}, ${R.mid})`,
             }}
           />
-          <div style={{ padding: 28 }}>
+          <div style={{ padding: 28, flex: 1, minHeight: 0, overflowY: "auto" }}>
             <p style={{ color: R.body, margin: 0 }}>Loading settings…</p>
           </div>
         </div>
@@ -294,6 +301,9 @@ export function Settings() {
           style={{
             padding: "26px 22px 30px",
             background: `linear-gradient(180deg, ${R.light} 0%, ${R.card} 48px)`,
+            flex: 1,
+            minHeight: 0,
+            overflowY: "auto",
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>

@@ -19,6 +19,7 @@ import { RecruxJobCard } from "../components/recrux/RecruxJobCard";
 import { RecruxMatchBreakdown } from "../components/recrux/RecruxMatchBreakdown";
 import { RecruxJobCardSkeletonList } from "../components/recrux/RecruxJobCardSkeleton";
 import { RecruxEmptyState } from "../components/recrux/RecruxEmptyState";
+import { DashboardAIBottomChat } from "../components/DashboardAIBottomChat";
 import type { Job } from "../types/job";
 
 type MatchTab = "high" | "saved" | "recent";
@@ -400,6 +401,8 @@ export function Dashboard() {
           <RecruxMatchBreakdown />
         </div>
       </aside>
+
+      <DashboardAIBottomChat />
     </div>
   );
 }

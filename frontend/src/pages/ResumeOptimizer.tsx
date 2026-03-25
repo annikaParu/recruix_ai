@@ -27,6 +27,8 @@ export function ResumeOptimizer() {
     padding: 16,
   } as const;
 
+  const panelHairline = `0.5px solid ${R.border}`;
+
   const mockOptimize = () => {
     setStreaming(true);
     setOptimized("");
@@ -95,7 +97,23 @@ export function ResumeOptimizer() {
   });
 
   return (
-    <div style={{ padding: 20, maxWidth: 1100, margin: "0 auto" }}>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "none",
+        margin: 0,
+        minHeight: "calc(100vh - 56px)",
+        boxSizing: "border-box",
+        background: R.card,
+        border: panelHairline,
+        borderRadius: 16,
+        boxShadow: "0 4px 28px rgba(4, 44, 83, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06)",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ padding: 20, flex: 1, minHeight: 0, overflowY: "auto" }}>
       <h1 style={{ fontSize: 22, fontWeight: 700, color: R.darkest, marginBottom: 16 }}>
         Resume optimizer
       </h1>
@@ -226,6 +244,7 @@ export function ResumeOptimizer() {
         </div>
       </div>
 
+      </div>
     </div>
   );
 }
