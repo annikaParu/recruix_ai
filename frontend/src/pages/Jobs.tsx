@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Filter, SlidersHorizontal, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useJobStore } from "../store/useJobStore";
+import { supabase } from "../lib/supabase";
 import { computeMatchScore } from "../lib/matchScore";
 import { mapJobToRecruxCard } from "../recrux/mapJobToCard";
 import { R } from "../recrux/theme";
@@ -46,6 +47,7 @@ export function Jobs() {
   const [sortBy, setSortBy] = useState<SortKey>("match-desc");
   const [hideApplied, setHideApplied] = useState(false);
   const [workMode, setWorkMode] = useState<WorkMode>("ANY");
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
   const queryInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const jobs = useJobStore((s) => s.jobs);
@@ -68,8 +70,67 @@ export function Jobs() {
   }, [user?.id, loadResumeFromSupabase]);
 
   useEffect(() => {
+    if (!user?.id) return;
+    setPrefsLoaded(false);
+    void (async () => {
+      try {
+        const { data: prefs } = await supabase
+          .from("user_preferences")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (!prefs) return;
+
+        const roles = Array.isArray(prefs.roles) ? (prefs.roles as string[]) : [];
+        const industries = Array.isArray(prefs.industries) ? (prefs.industries as string[]) : [];
+        const employmentTypes = Array.isArray(prefs.employment_types) ? (prefs.employment_types as string[]) : [];
+        const workLocation = Array.isArray(prefs.work_location) ? (prefs.work_location as string[]) : [];
+
+        const query = roles[0] || industries[0] || "Software Engineer";
+
+        const employmentType = (() => {
+          if (employmentTypes.some((t) => t.includes("Full-Time"))) return "FULLTIME";
+          if (employmentTypes.some((t) => t.includes("Part-Time"))) return "PARTTIME";
+          if (employmentTypes.some((t) => t.includes("Intern") || t.includes("Co-op"))) return "INTERN";
+          if (employmentTypes.some((t) => t.includes("Contract") || t.includes("Temporary"))) return "CONTRACTOR";
+          return "";
+        })();
+
+        const remoteOnly =
+          workLocation.some((w) => w.includes("Fully Remote")) &&
+          !workLocation.some((w) => w.includes("Hybrid") || w.includes("On-Site"));
+
+        // Pre-seed client-side work-mode dropdown for better UX.
+        const derivedWorkMode: WorkMode =
+          workLocation.some((w) => w.includes("Fully Remote")) &&
+          !workLocation.some((w) => w.includes("Hybrid") || w.includes("On-Site"))
+            ? "REMOTE"
+            : workLocation.some((w) => w.includes("Hybrid"))
+              ? "HYBRID"
+              : workLocation.some((w) => w.includes("On-Site"))
+                ? "INPERSON"
+                : "ANY";
+
+        setWorkMode(derivedWorkMode);
+        setFilters({
+          query,
+          remoteOnly,
+          employmentType,
+          location: "",
+        });
+      } catch {
+        // If prefs aren't available yet, fall back to existing defaults.
+      } finally {
+        setPrefsLoaded(true);
+      }
+    })();
+  }, [user?.id, setFilters]);
+
+  useEffect(() => {
+    if (!prefsLoaded) return;
     void fetchJobs(computeMatchScore);
-  }, [fetchJobs, resumeText]);
+  }, [fetchJobs, resumeText, prefsLoaded]);
 
   const savedIds = new Set(savedJobs.map((j) => j.id));
   const appliedSet = useMemo(() => new Set(appliedJobIds), [appliedJobIds]);

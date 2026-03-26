@@ -77,7 +77,7 @@ export function ResumeOptimizer() {
         }
       }
       if (!text) setResumeText("Resume uploaded.");
-      alert("Uploaded to Supabase Storage.");
+      alert("Resume uploaded successfully.");
     } catch (e: unknown) {
       alert(e instanceof Error ? e.message : "Upload failed.");
     } finally {
@@ -143,7 +143,7 @@ export function ResumeOptimizer() {
             opacity: uploading ? 0.6 : 1,
           }}
         >
-          {uploading ? "Uploading…" : "Upload to Supabase"}
+          {uploading ? "Uploading…" : "Upload Resume"}
         </button>
       </div>
 
